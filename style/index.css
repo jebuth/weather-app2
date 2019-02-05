@@ -150,6 +150,11 @@ table {
     flex-basis: 1    
 }
 
+.disabled{
+    background-color: #ddd !important;
+    color: grey !important;
+}
+
 /* ================================ General styles ================================ */
 
 /* set to fullscreen since app doesn't need to scroll */
@@ -320,4 +325,116 @@ button{
 #hourly-weather-wrapper{
     background-color: rgba(236,240,241, .5);
     color: #353B48;
+    position: fixed;
+    bottom: -100;
+    transition: bottom .5s;
+    height: 40%;
+}
+
+#hourly-weather-wrapper > div > div:last-child {
+    color: #636E72;
+}
+
+/* ============================== vertical menu ==============================*/
+
+#menu-container{
+    position: fixed; /*relative to the window */
+    height: 100%;
+    width: 60%;
+    top: 0;
+    right: -65%;
+    z-index: 4;
+    color: #fff;
+    transition: right .5s;
+}
+
+#menu-container > div{
+    background-color: rgba(53, 59, 72, 0.9);
+    width: 100%;
+    height: 100%;
+}
+
+#close-menu-btn{
+    position: absolute; 
+    right: 0;
+    color: #fff;
+    font-size: 25px;
+    padding: 10px;
+}
+
+#add-location-wrapper{
+    height: 50%;
+    width: 100%;
+    text-align: center;
+    padding: 60px 20px 0 20px;
+}
+
+#location-input{
+    background: transparent;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid #EE5253;
+    width: 100%;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: 1.2px;
+    padding-bottom: 5px;
+}
+
+#location-input::-webkit-input-placeholder{
+    color: #acacac;
+}
+
+#location-input::-moz-input-placeholder{
+    color: #acacac;
+}
+
+#location-input::-o-input-placeholder{
+    color: #acacac;
+}
+
+#add-city-btn{
+    background-color: #EE5253;
+    color: #fff;
+    padding: 7px 12px;
+    margin-top: 20px;
+    margin-bottom: 60px;
+    letter-spacing: 1.1px;
+    font-size: 16px;
+}
+
+#add-location-wrapper .location-label {
+    font-size: 26px;
+}
+
+#saved-cities-wrapper{
+    width: 100%;
+    height: 50%;
+    font-size: 18px;
+    padding: 10px 20px;
+    overflow-y: scroll;
+}
+
+.saved-city-box{
+    border-bottom: 2px solid #7F8C8D;
+    padding-bottom: 8px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.saved-city-box div:first-child{
+    flex: 5 5 0;
+}
+
+.saved-city-box div:last-child{
+    text-align: right;
+}
+
+.remove-saved-city-btn{
+    color: #EE5253;
+    border: 2px solid #EE5253;
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    
 }
