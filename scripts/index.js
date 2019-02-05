@@ -102,8 +102,29 @@ const GETLOCATION = (function () {
 
 })();
 
+// Get Weather data
+//this module will aquire weather data and then it will pass to another
+//module which will put the data on UI
+// ===================================================
+const WEATHER = (function(){
+    const darkSkyKey = '9f6ff95bc5e8490a724e4e8a95156cad',
+          geoCoderKey = '6d761e3da3f5434384888c86978cdd12';
+
+    const _getGeocodeURL = (location) => {
+        `https://api.opencagedata.com/geocode/v1/json?q=${location}&
+        key=${geoCoderKey}`;
+    }
+
+    const _getDarkSkyURL = (lat, lng) => {
+        `https://api.darksky.net/forecast/${darkSkyKey}/${lat},${lng}`;
+    }
+    
+    
+
+})();
+
 // Init
-// ============================================
+// ===================================================
 window.onload = function () {
     UI.showApp();
 }
