@@ -82,7 +82,7 @@ const GETLOCATION = (function () {
         addCityBtn.setAttribute('disabled', 'true');
         addCityBtn.classList.add('disabled');
 
-        alert('get data for ' + location);
+        WEATHER.getWeather(location);
     }
 
     locationInput.addEventListener('input', function(){
@@ -107,18 +107,48 @@ const GETLOCATION = (function () {
 //module which will put the data on UI
 // ===================================================
 const WEATHER = (function(){
+
     const darkSkyKey = '9f6ff95bc5e8490a724e4e8a95156cad',
-          geoCoderKey = '6d761e3da3f5434384888c86978cdd12';
+          geoCoderKey = '74163634c7fd410fa608168e98436983';
 
-    const _getGeocodeURL = (location) => {
-        `https://api.opencagedata.com/geocode/v1/json?q=${location}&
-        key=${geoCoderKey}`;
+    const _getGeocodeURL = (location) => `https://api.opencagedata.com/geocode/v1/json?q=${location}&key=${geoCoderKey}`;
+    const _getDarkSkyURL = (lat, lng) => `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${darkSkyKey}/${lat},${lng}`;
+
+    const _getDarkSkyData = (url) => {
+        axios.get(url)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log('err');
+            });
     }
 
-    const _getDarkSkyURL = (lat, lng) => {
-        `https://api.darksky.net/forecast/${darkSkyKey}/${lat},${lng}`;
+
+    const getWeather = (location) => {
+        UI.loadApp();
+
+        //get lat/lng from geoCodeAPI
+        let geoCodeURL = _getGeocodeURL(location);
+
+        console.log('geoCodeURL: ' + geoCodeURL)
+        axios.get(geoCodeURL)   
+            .then((res) => {
+                let lat = res.data.results[0].geometry.lat,
+                    lng = res.data.results[0].geometry.lng;
+
+                let darkSkyURL = _getDarkSkyURL(lat, lng);
+
+                _getDarkSkyData(darkSkyURL);
+            })
+            .catch((err) => {
+                console.err(err)
+            })
+    };
+
+    return {
+        getWeather
     }
-    
     
 
 })();
