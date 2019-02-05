@@ -101,8 +101,6 @@ table {
   }
 }
 
-
-
 /* ================================ General class styles ================================ */
 .center{
     position: absolute;
@@ -193,7 +191,7 @@ button{
     top: 20px;
     right: 20px;
     padding: 10px;
-    z-index: 5;
+    z-index: 4;
     border-radius: 50%;
 }
 
@@ -283,6 +281,10 @@ button{
     transform: translate(-50%, -50%);
 }
 
+#toggle-hourly-weather img{
+    transition: transform .5s;
+}
+
 .weather-box{
     position: relative;
     margin-bottom: 15px;
@@ -323,6 +325,7 @@ button{
 
 #daily-weather-wrapper{
     background-color: rgba(000,000,000, .5);
+    transition: opacity .5s;
 }
 
 #hourly-weather-wrapper{

@@ -29,9 +29,9 @@
 
 </head> 
 <body>
-    <div class="lds-dual-ring center display-none"></div>
+    <div id="app-loader" class="lds-dual-ring center"></div>
 
-    <main>
+    <main hidden>
         <button id="open-menu-btn" class="ripple">
             <img class="icon-sm-28"
              src="./assets/images/icons/menu.png"
@@ -81,7 +81,7 @@
             </div>
 
             <!-- hourly weather wrapper -->
-            <div id="hourly-weather-wrapper" class="lower-panel-body">
+            <div id="hourly-weather-wrapper" class="lower-panel-body" visible='false'>
                 <div class="flex-container weather-box">
                     <div>
                         <h1>14:00</h1>
