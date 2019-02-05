@@ -76,6 +76,15 @@ const GETLOCATION = (function () {
     const locationInput = document.querySelector('#location-input'),
             addCityBtn = document.querySelector('#add-city-btn');
 
+    const _addCity = () => {
+        location = locationInput.value;
+        locationInput.value = "";
+        addCityBtn.setAttribute('disabled', 'true');
+        addCityBtn.classList.add('disabled');
+
+        alert('get data for ' + location);
+    }
+
     locationInput.addEventListener('input', function(){
         // "this" is the element that fired this event
         let inputText = this.value.trim();
@@ -87,9 +96,10 @@ const GETLOCATION = (function () {
             addCityBtn.setAttribute('disabled', 'true');
             addCityBtn.classList.add('disabled');
         }
-
-        console.log(inputText);
     })
+
+    addCityBtn.addEventListener('click', _addCity);
+
 })();
 
 // Init
