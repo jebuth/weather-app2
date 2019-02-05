@@ -58,13 +58,47 @@ const UI = (function (){
     }
 
     document.querySelector('#toggle-hourly-weather')    
-        .addEventListener('click', _toggleHourlyWeather)
+        .addEventListener('click', _toggleHourlyWeather);
+
+
+    const drawWeatherData = (data, location) => {
+        console.log(data)
+        console.log(location)
+
+        let currentlyData = data.currently;
+
+        // set city names in UI
+        document.querySelectorAll('.location-label').forEach((element) => {
+            element.innerHTML = location;
+        })
+
+        // // set bg image
+        document.querySelector('main').style.backgroundImage = `url(./assets/images/bg-images/${currentlyData.icon}.jpg)`;
+
+        //set icon
+        document.querySelector('#currentlyIcon').setAttribute('src', `./assets/images/summary-icons/${currentlyData.icon}-white.png`);
+
+        // // set temperature
+        document.querySelector('#degrees-label').innerHTML = Math.round(currentlyData.temperature) + '&#176';
+
+        // humidity
+        document.querySelector('#humidity-label').innerHTML = Math.round(currentlyData.humidity * 100) + '%';
+
+        // wind speed
+        document.querySelector('#wind-speed-label').innerHTML = (currentlyData.windSpeed * 1.6093).toFixed(0) + ' kph';
+
+        UI.showApp();
+    };
+
+    
+
     // ================================================
 
     // export functions outside the module
     return {
         showApp, 
-        loadApp
+        loadApp,
+        drawWeatherData
     }
 
 })();
@@ -114,10 +148,12 @@ const WEATHER = (function(){
     const _getGeocodeURL = (location) => `https://api.opencagedata.com/geocode/v1/json?q=${location}&key=${geoCoderKey}`;
     const _getDarkSkyURL = (lat, lng) => `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${darkSkyKey}/${lat},${lng}`;
 
-    const _getDarkSkyData = (url) => {
+    const _getDarkSkyData = (url, location) => {
         axios.get(url)
             .then((res) => {
-                console.log(res);
+                //console.log(res);
+
+                UI.drawWeatherData(res.data, location);
             })
             .catch((err) => {
                 console.log('err');
@@ -131,7 +167,7 @@ const WEATHER = (function(){
         //get lat/lng from geoCodeAPI
         let geoCodeURL = _getGeocodeURL(location);
 
-        console.log('geoCodeURL: ' + geoCodeURL)
+        //console.log('geoCodeURL: ' + geoCodeURL)
         axios.get(geoCodeURL)   
             .then((res) => {
                 let lat = res.data.results[0].geometry.lat,
@@ -139,11 +175,12 @@ const WEATHER = (function(){
 
                 let darkSkyURL = _getDarkSkyURL(lat, lng);
 
-                _getDarkSkyData(darkSkyURL);
+                _getDarkSkyData(darkSkyURL, location);
             })
             .catch((err) => {
                 console.err(err)
             })
+
     };
 
     return {
