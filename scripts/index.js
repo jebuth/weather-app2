@@ -195,6 +195,11 @@ const GETLOCATION = (function () {
     })
 
     addCityBtn.addEventListener('click', _addCity);
+    document.addEventListener('keydown', function(event){
+        if(event.keyCode === 13){
+            addCityBtn.click();
+        }
+    })
 
 })();
 
@@ -232,6 +237,16 @@ const WEATHER = (function(){
         //console.log('geoCodeURL: ' + geoCodeURL)
         axios.get(geoCodeURL)   
             .then((res) => {
+                // user provided invalid city
+                if(res.data.results.length == 0){
+                    console.error('Invalid Location');
+                    UI.showApp();
+                    return;
+                }
+
+                // valid city
+                LOCALSTORAGE.save(location);
+
                 let lat = res.data.results[0].geometry.lat,
                     lng = res.data.results[0].geometry.lng;
 
@@ -259,8 +274,11 @@ const LOCALSTORAGE = (function (){
     let savedCities = [];
 
     const save = (city) => {
-        savedCities.push(city);
-        localStorage.setItem('savedCities', JSON.stringify(savedCities));
+        if(!savedCities.includes(city)){
+            savedCities.push(city);
+            localStorage.setItem('savedCities', JSON.stringify(savedCities));
+            SAVEDCITIES.drawCity(city);
+        }
     }
 
     const get = () => {
@@ -285,15 +303,89 @@ const LOCALSTORAGE = (function (){
         remove,
         getSavedCities
     }
-
 })();
 
+const SAVEDCITIES = (function() {
+    let container = document.querySelector('#saved-cities-wrapper');
 
+    const drawCity = (city) => {
+        let cityBox = document.createElement('div'),
+            cityWrapper = document.createElement('div'),
+            deleteWrapper = document.createElement('div'),
+            cityTextNode = document.createElement('h1'),
+            deleteButton = document.createElement('button');
+
+        cityBox.classList.add('saved-city-box', 'flex-container');
+        cityWrapper.classList.add('ripple', 'set-city');
+        cityTextNode.classList.add('set-city');
+        cityTextNode.innerHTML = city;
+
+        cityWrapper.append(cityTextNode);
+        cityBox.append(cityWrapper);
+
+        deleteButton.classList.add('ripple', 'remove-saved-city');
+        deleteButton.innterHTML = '-';
+        deleteWrapper.append(deleteButton);
+        cityBox.append(deleteWrapper);
+
+        container.append(cityBox);
+    }
+
+    const _deleteCity = (cityHTMLButton) => {
+        // create an array from HTMLcollection
+        let nodes = Array.prototype.slice.call(container.children),
+            cityWrapper = cityHTMLButton.closest('.saved-city-box'),
+            cityIndex = nodes.indexOf(cityWrapper);
+        
+        LOCALSTORAGE.remove(cityIndex);
+        cityWrapper.remove();
+    }
+
+    // add click events to the dynamic buttons by adding the event to the entire document
+    // then checking the classname of target
+    document.addEventListener('click', function(event){
+        if(event.target.classList.contains('remove-saved-city')){
+            _deleteCity(event.target);
+        }
+        else if(event.target.classList.contains('set-city')){
+            let nodes = Array.prototype.splice.call(container.children),
+                cityWrapper = event.target.closest('.saved-city-box'),
+                cityIndex = nodes.indexOf(cityWrapper),
+                savedCities = LOCALSTORAGE.getSavedCities();
+
+            WEATHER.getWeather(savedCities[cityIndex]);
+        }
+        
+    });
+
+    // click a city and get weather data
+    
+
+    return {
+        drawCity
+    }
+
+})();
 
 // Init
 // ===================================================
 window.onload = function () {
-    UI.showApp();
+    
+    // method to initialize savedCities from cache
+    LOCALSTORAGE.get(); 
+    
+    // get savedCities
+    let cities = LOCALSTORAGE.getSavedCities();
+
+    // if there is data in cache, load the newest
+    if(cities.length > 0){
+        cities.forEach((city) => SAVEDCITIES.drawCity(city));
+        WEATHER.getWeather(cities[cities.length-1], false);
+    }
+    // show blank screen
+    else{
+        UI.showApp();
+    }
 }
 
 
